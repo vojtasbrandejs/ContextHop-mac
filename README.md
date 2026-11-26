@@ -18,6 +18,10 @@ macOS may ask for Accessibility permission again after an update.
 
 Open a conversation, click the two bubbles in the menu bar, and choose **Copy context**. Paste the prompt into the other tool on the same Mac. Grant Accessibility for visible-chat detection, or pick from **Recent chats**.
 
+## Demo
+
+[![Watch the 18-second ContextHop demo from Codex to Claude Code](docs/demo-preview.jpg)](https://github.com/vojtasbrandejs/ContextHop-mac/releases/download/v1.0.3/contexthop-demo.mp4)
+
 ## Build from source
 
 ```sh
