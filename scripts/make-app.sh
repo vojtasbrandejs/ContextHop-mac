@@ -9,8 +9,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-VERSION="${CONTEXTHOP_VERSION:-1.0.2}"
-BUILD_NUMBER="${CONTEXTHOP_BUILD_NUMBER:-3}"
+VERSION="${CONTEXTHOP_VERSION:-1.0.3}"
+BUILD_NUMBER="${CONTEXTHOP_BUILD_NUMBER:-4}"
 ARM64_TRIPLE="arm64-apple-macosx14.0"
 X86_64_TRIPLE="x86_64-apple-macosx14.0"
 APP="$ROOT/.build/ContextHop.app"

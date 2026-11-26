@@ -6,8 +6,8 @@ APP_NAME="ContextHop.app"
 EXECUTABLE_NAME="ContextHop"
 BUNDLE_IDENTIFIER="com.vojta.contexthop"
 REPOSITORY="vojtasbrandejs/ContextHop-mac"
-SOURCE_REF="${CONTEXTHOP_SOURCE_REF:-v1.0.2}"
-SOURCE_ARCHIVE_URL="${CONTEXTHOP_SOURCE_ARCHIVE_URL:-https://github.com/$REPOSITORY/archive/refs/tags/$SOURCE_REF.tar.gz}"
+SOURCE_REF="${CONTEXTHOP_SOURCE_REF:-v1.0.3}"
+SOURCE_ARCHIVE_URL="${CONTEXTHOP_SOURCE_ARCHIVE_URL:-https://codeload.github.com/$REPOSITORY/tar.gz/refs/tags/$SOURCE_REF}"
 INSTALL_DIR="${CONTEXTHOP_INSTALL_DIR:-/Applications}"
 LAUNCH_AFTER_INSTALL="${CONTEXTHOP_LAUNCH_AFTER_INSTALL:-1}"
 TESTING="${CONTEXTHOP_INSTALLER_TESTING:-0}"
@@ -112,6 +112,7 @@ SWIFT_MAJOR="$(/usr/bin/xcrun swift --version | /usr/bin/awk '/Swift version/ { 
 
 echo "Downloading ContextHop source $SOURCE_REF from GitHub…"
 download "$SOURCE_ARCHIVE_URL" "$ARCHIVE"
+/usr/bin/gzip -t "$ARCHIVE" 2>/dev/null || fail "GitHub did not return a valid source archive"
 
 /bin/mkdir -p "$SOURCE_DIR"
 /usr/bin/tar -xzf "$ARCHIVE" --strip-components 1 -C "$SOURCE_DIR"

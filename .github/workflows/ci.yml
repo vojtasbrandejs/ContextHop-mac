@@ -36,9 +36,9 @@ jobs:
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' \
             .build/ContextHop.app/Contents/Info.plist)" = "com.vojta.contexthop"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' \
-            .build/ContextHop.app/Contents/Info.plist)" = "1.0.2"
+            .build/ContextHop.app/Contents/Info.plist)" = "1.0.3"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' \
-            .build/ContextHop.app/Contents/Info.plist)" = "3"
+            .build/ContextHop.app/Contents/Info.plist)" = "4"
           test "$(/usr/libexec/PlistBuddy -c 'Print :LSMinimumSystemVersion' \
             .build/ContextHop.app/Contents/Info.plist)" = "14.0"
 
@@ -89,8 +89,8 @@ jobs:
             -verify_arch arm64 x86_64
           test "$(/usr/libexec/PlistBuddy \
             -c 'Print :CFBundleShortVersionString' \
-            "$INSTALLED_APP/Contents/Info.plist")" = "1.0.2"
+            "$INSTALLED_APP/Contents/Info.plist")" = "1.0.3"
           test "$(/usr/libexec/PlistBuddy \
             -c 'Print :CFBundleVersion' \
-            "$INSTALLED_APP/Contents/Info.plist")" = "3"
+            "$INSTALLED_APP/Contents/Info.plist")" = "4"
           ! xattr -p com.apple.quarantine "$INSTALLED_APP"

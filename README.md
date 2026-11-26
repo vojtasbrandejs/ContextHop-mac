@@ -7,7 +7,7 @@ Continue a Claude Code conversation in Codex, or the other way around, from the 
 [Download from GitHub Releases](https://github.com/vojtasbrandejs/ContextHop-mac/releases/latest). The installer requires macOS 14.5 or later and Apple Command Line Tools with Swift 6 or newer.
 
 ```sh
-curl -fL -o install.sh https://github.com/vojtasbrandejs/ContextHop-mac/releases/download/v1.0.2/install.sh && bash install.sh
+curl -fL -o install.sh https://github.com/vojtasbrandejs/ContextHop-mac/releases/download/v1.0.3/install.sh && bash install.sh
 ```
 
 The installer builds the app on your Mac for Apple silicon and Intel, then opens it. Run it again to update.
