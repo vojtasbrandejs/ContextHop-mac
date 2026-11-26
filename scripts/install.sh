@@ -19,6 +19,7 @@ BACKUP_APP="$WORK_DIR/previous-$APP_NAME"
 PREVIOUS_APP_MOVED=0
 INSTALL_STARTED=0
 INSTALL_COMPLETE=0
+LOCK_DIR=""
 
 cleanup() {
     local restored=1
@@ -29,6 +30,9 @@ cleanup() {
         if [[ "$PREVIOUS_APP_MOVED" == "1" && -e "$BACKUP_APP" ]]; then
             /bin/mv "$BACKUP_APP" "$TARGET_APP" 2>/dev/null || restored=0
         fi
+    fi
+    if [[ -n "$LOCK_DIR" ]]; then
+        /bin/rmdir "$LOCK_DIR" 2>/dev/null || true
     fi
     if [[ "$restored" == "1" ]]; then
         /bin/rm -rf "$WORK_DIR"
@@ -149,6 +153,12 @@ fi
 
 /bin/mkdir -p "$INSTALL_DIR" || fail "could not create $INSTALL_DIR"
 [[ -w "$INSTALL_DIR" ]] || fail "cannot write to $INSTALL_DIR"
+
+LOCK_PATH="$INSTALL_DIR/.contexthop-install-lock"
+if ! /bin/mkdir "$LOCK_PATH" 2>/dev/null; then
+    fail "another installation may be running (lock: $LOCK_PATH)"
+fi
+LOCK_DIR="$LOCK_PATH"
 
 if [[ "$TESTING" != "1" ]]; then
     stop_running_app
