@@ -1,0 +1,10 @@
+*.app
+*.icns
+*.xcodeproj
+.DS_Store
+.build/
+.swiftpm/
+DerivedData/
+PLAN.md
+diagnostics/
+dist/

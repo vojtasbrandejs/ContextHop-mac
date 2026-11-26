@@ -1,0 +1,96 @@
+name: macOS CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: macos-26
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Run tests
+        env:
+          CONTEXTHOP_MIN_TEST_COUNT: "170"
+        run: ./scripts/run-tests.sh
+
+      - name: Check scripts
+        run: for script in scripts/*.sh; do bash -n "$script" || exit 1; done
+
+      - name: Build and package application
+        run: ./scripts/make-app.sh
+
+      - name: Verify application
+        run: |
+          codesign --verify --deep --strict --verbose=2 .build/ContextHop.app
+          lipo .build/ContextHop.app/Contents/MacOS/ContextHop \
+            -verify_arch arm64 x86_64
+          cmp LICENSE .build/ContextHop.app/Contents/Resources/LICENSE.txt
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' \
+            .build/ContextHop.app/Contents/Info.plist)" = "com.vojta.contexthop"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' \
+            .build/ContextHop.app/Contents/Info.plist)" = "1.0.2"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' \
+            .build/ContextHop.app/Contents/Info.plist)" = "3"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :LSMinimumSystemVersion' \
+            .build/ContextHop.app/Contents/Info.plist)" = "14.0"
+
+      - name: Verify distribution packages
+        run: |
+          (
+            cd dist
+            shasum -a 256 -c ContextHop.app.zip.sha256
+            shasum -a 256 -c ContextHop.dmg.sha256
+          )
+          hdiutil verify dist/ContextHop.dmg
+          MOUNT_POINT="$RUNNER_TEMP/contexthop-dmg"
+          mkdir -p "$MOUNT_POINT"
+          hdiutil attach \
+            -quiet \
+            -nobrowse \
+            -readonly \
+            -mountpoint "$MOUNT_POINT" \
+            dist/ContextHop.dmg
+          trap 'hdiutil detach -quiet "$MOUNT_POINT"' EXIT
+          test -x "$MOUNT_POINT/ContextHop.app/Contents/MacOS/ContextHop"
+          test -L "$MOUNT_POINT/Applications"
+          cmp LICENSE "$MOUNT_POINT/LICENSE.txt"
+          cmp LICENSE "$MOUNT_POINT/ContextHop.app/Contents/Resources/LICENSE.txt"
+          codesign --verify --deep --strict "$MOUNT_POINT/ContextHop.app"
+          lipo "$MOUNT_POINT/ContextHop.app/Contents/MacOS/ContextHop" \
+            -verify_arch arm64 x86_64
+          hdiutil detach -quiet "$MOUNT_POINT"
+          trap - EXIT
+
+      - name: Verify local source installation
+        run: |
+          git archive \
+            --format=tar.gz \
+            --prefix=ContextHop-source/ \
+            HEAD \
+            -o "$RUNNER_TEMP/ContextHop-source.tar.gz"
+          CONTEXTHOP_INSTALLER_TESTING=1 \
+            CONTEXTHOP_SOURCE_REF="$GITHUB_SHA" \
+            CONTEXTHOP_SOURCE_ARCHIVE_URL="file://$RUNNER_TEMP/ContextHop-source.tar.gz" \
+            CONTEXTHOP_INSTALL_DIR="$RUNNER_TEMP/installed" \
+            CONTEXTHOP_LAUNCH_AFTER_INSTALL=0 \
+            ./scripts/install.sh
+          INSTALLED_APP="$RUNNER_TEMP/installed/ContextHop.app"
+          test -x "$INSTALLED_APP/Contents/MacOS/ContextHop"
+          codesign --verify --deep --strict "$INSTALLED_APP"
+          lipo "$INSTALLED_APP/Contents/MacOS/ContextHop" \
+            -verify_arch arm64 x86_64
+          test "$(/usr/libexec/PlistBuddy \
+            -c 'Print :CFBundleShortVersionString' \
+            "$INSTALLED_APP/Contents/Info.plist")" = "1.0.2"
+          test "$(/usr/libexec/PlistBuddy \
+            -c 'Print :CFBundleVersion' \
+            "$INSTALLED_APP/Contents/Info.plist")" = "3"
+          ! xattr -p com.apple.quarantine "$INSTALLED_APP"

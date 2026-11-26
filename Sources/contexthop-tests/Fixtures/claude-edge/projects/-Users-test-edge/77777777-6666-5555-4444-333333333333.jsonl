@@ -1,0 +1,2 @@
+{"parentUuid":null,"isSidechain":false,"cwd":"/Users/test/edge","sessionId":"77777777-6666-5555-4444-333333333333","type":"user","message":{"role":"user","content":"Investigate the crash on startup"},"uuid":"dddd0001-0000-0000-0000-000000000001","timestamp":"2026-07-05T12:00:00.000Z"}
+{"parentUuid":"dddd0001-0000-0000-0000-000000000001","isSidechain":false,"cwd":"/Users/test/edge","sessionId":"77777777-6666-5555-4444-333333333333","type":"assistant","message":{"role":"assistant","content":[{"type":"text","te
