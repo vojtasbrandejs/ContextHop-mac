@@ -20,7 +20,9 @@ Open a conversation, click the two bubbles in the menu bar, and choose **Copy co
 
 ## Demo
 
-[![Watch the 18-second ContextHop demo from Codex to Claude Code](docs/demo-preview.jpg)](https://github.com/vojtasbrandejs/ContextHop-mac/releases/download/v1.0.3/contexthop-demo.mp4)
+https://github.com/user-attachments/assets/10f5b2df-bb53-4a7b-9f23-ef0a8e1798c5
+
+[Download MP4](https://github.com/vojtasbrandejs/ContextHop-mac/releases/download/v1.0.3/contexthop-demo.mp4)
 
 ## Build from source
 
